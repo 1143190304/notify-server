@@ -2,64 +2,28 @@
  * @name goodMorning
  * @description 说早安
  */
-import API from '../../api/loveMsg'
-import { wxNotify } from '../WxNotify'
-import { textTemplate } from './templates/text'
-import { textCardTemplate } from './templates/textcard'
+import { weekToday } from '../../utils/dayjs'
+import { prodCard } from './prodCard'
+import { prodGoodWord } from './prodgoodWord'
 
-// 美丽短句
-const goodWord = async () => {
-  try {
-    // 并行请求，优响相应
-    const dataSource = await Promise.allSettled([
-      API.getSaylove(), // 土味情话
-      API.getCaihongpi(), // 彩虹屁
-      API.getOneWord(), // 一言
-      API.getSongLyrics(), // 最美宋词
-      API.getOneMagazines(), // one杂志
-      API.getNetEaseCloud(), // 网易云热评
-      API.getDayEnglish(), // 每日英语
-    ])
-
-    // 过滤掉异常数据
-    const [sayLove, caiHongpi, oneWord, songLyrics, oneMagazines, netEaseCloud, dayEnglish] =
-      dataSource.map((n) => (n.status === 'fulfilled' ? n.value : null))
-
-    // 对象写法
-    const data: any = {
-      sayLove,
-      caiHongpi,
-      oneWord,
-      songLyrics,
-      oneMagazines,
-      netEaseCloud,
-      dayEnglish,
-    }
-
-    const template = textTemplate(data)
-    console.log('goodWord', template)
-
-    wxNotify(template)
-  } catch (error) {
-    console.log('goodWord:err', error)
+// 自定义早安情话招呼语
+function getcustom() {
+  let text = '早安呀，我可爱的徐小鸭~\n'
+  // 工作日/休息日，需要排除节假日
+  const week = weekToday()
+  if (['星期六', '星期日'].includes(week)) {
+    text += `如果徐小鸭起床啦！崽崽向你说早安呦~，记得吃早饭呀😆\n嗯哼哼~今天可是${week}哦，上班别迟到了哦~`
   }
-}
-
-// 天气信息
-const weatherInfo = async () => {
-  const weather = await API.getWeather('蚌埠')
-  if (weather) {
-    const lunarInfo = await API.getLunarDate(weather.date)
-    const template = textCardTemplate({ ...weather, lunarInfo })
-    console.log('weatherInfo', template)
-
-    // 发送消息
-    await wxNotify(template)
+  else {
+    text += `如果我徐小鸭还没起床呀！崽崽就等着徐小鸭起床给我说早安呦🤣嗯哼~，既然今天是${week}，就让你再睡会懒觉~下次可不能啦~😝\n`
   }
+  return text
 }
-
 // goodMorning
-export const goodMorning = async () => {
-  await weatherInfo()
-  await goodWord()
+export const goodMorning = async (isCard,textArray) => {
+  const customText = getcustom()
+  if(isCard == 'card'){
+     await prodCard()
+  }
+  await prodGoodWord(textArray,customText)
 }

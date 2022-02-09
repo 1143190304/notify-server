@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { getTian } from '../utils/http'
-
 /**
  * 给女朋友发送内容的相关接口
  */
@@ -38,7 +37,7 @@ enum LoveMsgURL {
 class API {
   key: string
   constructor(key?: string) {
-    this.key = key || '' // 为了方便，key在 http中统一添加
+    this.key = key || '05990f2f621ba52619434d92c176d92a' // 为了方便，key在 http中统一添加
   }
 
   getKey() {
@@ -48,11 +47,9 @@ class API {
   /**
    * 接口 ++++++++++
    */
-
   // 天气
   async getWeather(city_name: string): Promise<IWeatherResponseProps> {
     const res = await getTian({ url: LoveMsgURL.weather, params: { city: city_name } })
-    console.log(res)
     return res?.[0]
   }
 

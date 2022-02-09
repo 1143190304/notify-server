@@ -1,27 +1,21 @@
 /**
  * @name goodAfternoon
- * @description 说午安
+ * @description 下午
  */
-import API from '../../api/loveMsg'
-import { wxNotify } from '../WxNotify'
 
-export const goodAfternoon = async() => {
-  const res = await API.getJoke()
-
-  let text = '今日份午安来喽:\n'
-
-  text += `
-请欣赏以下雷人笑话😝\n`
-
-  text += `
-${res.map(n => `『${n.title}』${n.content}`).join('\n\n')}`
-
-  const template = {
-    msgtype: 'text',
-    text: {
-      content: text,
-    },
+import { prodCard } from './prodCard'
+import { prodGoodWord } from './prodgoodWord'
+import { prodJoke } from './prodJoke'
+// 自定义中午情话招呼语
+function getcustom() {
+    let text = '下午好呀，我可爱的徐小鸭~\n'
+    return text
+}
+export const goodAfternoon = async(isCard,textArray) => {
+  const customText = getcustom()
+  if(isCard == 'card'){
+     await prodCard()
   }
-
-  await wxNotify(template)
+  await prodJoke() //生成特殊布局的长文章(笑话)
+  await prodGoodWord(textArray,customText)
 }
