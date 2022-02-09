@@ -9,7 +9,11 @@
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "skipDefaultLibCheck": true,
-    "typeRoots": ["typings"]
+    "typeRoots": ["typings"],
+    "types": [
+      "node",
+      "webpack-env"
+    ]
   },
   "include": ["src", "typings", "test"],
   "exclude": ["node_modules", "dist"]
